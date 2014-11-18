@@ -1,0 +1,23 @@
+{
+    "name": "amitavroy/administer",
+    "description": "",
+    "authors": [
+        {
+            "name": "Amitav Roy",
+            "email": "reachme@amitavroy.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "illuminate/support": "4.2.*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/migrations"
+        ],
+        "psr-0": {
+            "Amitavroy\\Administer\\": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}
