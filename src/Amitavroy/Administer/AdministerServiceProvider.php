@@ -19,6 +19,7 @@ class AdministerServiceProvider extends ServiceProvider {
 	public function boot()
 	{
 		$this->package('amitavroy/administer');
+        include __DIR__ . '/../../routes.php';
 	}
 
 	/**

@@ -13,7 +13,10 @@
     },
     "autoload": {
         "classmap": [
-            "src/migrations"
+            "src/helpers",
+            "src/controllers",
+            "src/migrations",
+            "src/models"
         ],
         "psr-0": {
             "Amitavroy\\Administer\\": "src/"
