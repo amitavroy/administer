@@ -8,10 +8,17 @@
 
 class GlobalController extends BaseController {
     protected $layout;
+    protected $events;
 
     public function __construct()
     {
         $this->setLayout(AdminHelper::getConfig('master-layout'));
+
+        /**
+         * Subscribing to the Events handled by the event manager.
+         */
+        $this->events = new EventManager;
+        Event::subscribe($this->events);
     }
 
     public function setLayout($layoutName = null)

@@ -1,10 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
+<!-- Head start-->
+@include('administer::masters.head')
+<!-- Head end-->
 
+<body>
+    <div class="container">
+        @yield('content')
+    </div>
 </body>
 </html>

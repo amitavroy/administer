@@ -14,7 +14,7 @@ class AdminHelperTest extends TestCase {
      */
     public function testDsmWitoutVariable()
     {
-        $this->assertTrue(AdminHelper::dsm());
+        AdminHelper::dsm();
     }
 
     /**
