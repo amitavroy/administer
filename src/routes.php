@@ -18,5 +18,17 @@ Route::group(array('before' => 'csrf'), function() {
 Route::group(array('prefix' => 'user', 'before' => 'auth'), function() {
     Route::get('logout', 'UserController@handleUserLogout');
     Route::get('dashboard', 'UserController@getUserDashboard');
-    Route::get('dummy', 'UserController@getUserDummyPage');
+    Route::get('profile/view', 'UserController@getUserProfileView');
+    Route::get('profile/edit', 'UserController@getUserProfileEdit');
+
+    Route::group(array('before' => 'csrf'), function() {
+        Route::post('profile/update', 'UserController@handleUserProfileUpdate');
+    });
+});
+
+/*
+ * Registering the validation
+ */
+Validator::resolver(function($translator, $data, $rules, $message){
+    return new CustomValidation($translator, $data, $rules, $message);
 });
