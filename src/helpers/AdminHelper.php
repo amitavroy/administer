@@ -39,6 +39,13 @@ class AdminHelper {
         return Config::get("packages/amitavroy/administer/administer.{$name}");
     }
 
+    /**
+     * This function will check the current route and apply the active or
+     * normal class.
+     *
+     * @param $link
+     * @return string
+     */
     public static function activeLinkHandle($link)
     {
         if (!isset($link) || $link == '') {
@@ -52,5 +59,59 @@ class AdminHelper {
         } else {
             return 'normal';
         }
+    }
+
+    /**
+     * This function is compiling all the messages in the session in a key value
+     * pair. It sets messages based on different alert levels.
+     * @param $message
+     * @param string $flag
+     */
+    public static function setMessages($message, $flag = 'info')
+    {
+        if (!Session::get('messages')) {
+            $messageArr = array(
+              'success' => '',
+              'info' => '',
+              'warning' => '',
+              'danger' => '',
+            );
+        } else {
+            $messageArr = Session::get('messages');
+        }
+
+
+        $messageArr[$flag] = $messageArr[$flag] .
+          "<div class='alert alert-{$flag}' role='alert'>{$message}</div>";
+
+        Session::put('messages', $messageArr);
+    }
+
+    /**
+     * This function is going to fetch all messages set throughout the applicaiton
+     * and render them out.
+     * It will also clear the session once the messages are displayed.
+     * @return string
+     */
+    public static function getMessages()
+    {
+        $sessionMessages = Session::get('messages');
+
+        $output = '';
+        foreach ($sessionMessages as $message) {
+            if ($message != '')
+                $output .= $message;
+        }
+
+        $messageArr = array(
+          'success' => '',
+          'info' => '',
+          'warning' => '',
+          'danger' => '',
+        );
+
+        Session::put('messages', $messageArr);
+
+        return $output;
     }
 }

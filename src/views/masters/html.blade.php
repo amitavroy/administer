@@ -6,6 +6,10 @@
 
 <body>
     <div class="container">
+        @if(Session::get('messages'))
+        <div class="message">{{AdminHelper::getMessages()}}</div>
+        @endif
+
         @yield('content')
     </div>
 </body>

@@ -10,7 +10,11 @@ class EventManager {
 
     public function onUserLogin()
     {
-        
+        // login success message
+        AdminHelper::setMessages('Login successful', 'success');
+
+        // setting the user time zone
+        date_default_timezone_set(Auth::user()->timezone);
     }
 
     public function subscribe($events)

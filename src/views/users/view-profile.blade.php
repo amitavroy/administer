@@ -11,6 +11,13 @@
           <li class="list-group-item"><strong>Email:</strong> {{Auth::user()->email}}</li>
           <li class="list-group-item"><strong>Timezone:</strong> {{Auth::user()->timezone}}</li>
         </ul>
+
+        <h4>My groups</h4>
+        <ul class="list-group">
+          @foreach($data['groups'] as $group)
+          <li class="list-group-item">{{$group->name}}</li>
+          @endforeach
+        </ul>
     </div>
 </div>
 @show
