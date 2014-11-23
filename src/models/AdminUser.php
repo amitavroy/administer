@@ -34,23 +34,17 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
             }
         }
 
-        /**
-         * Checking of the id
-         */
+        // Validating the user id
         if (!isset($userId) || !is_numeric($userId)) {
             App::abort(500, 'Invalid or missing argument');
         }
 
-        /**
-         * Fields we need to select by default
-         */
+        // Fields we need to select by default
         $select = array(
             'groups.name', 'groups.id'
         );
 
-        /**
-         * Need to pass second parameter as true to get full group details
-         */
+        // Need to pass second parameter as true to get full group details
         if ($full == true) {
             array_push($select, 'groups.data', 'groups.created_at', 'groups.updated_at');
         }
@@ -59,6 +53,7 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
         $query->select($select);
         $query->where('user_groups.user_id', $userId);
         $query->join('groups', 'groups.id', '=', 'user_groups.group_id', 'left');
+        $query->orderBy('groups.id', 'desc');
         $result = $query->get();
 
         /**

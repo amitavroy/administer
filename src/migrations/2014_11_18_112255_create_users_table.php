@@ -25,6 +25,9 @@ class CreateUsersTable extends Migration {
             $table->string('timezone')->default('Asia/Kolkata');
             $table->binary('data');
             $table->rememberToken();
+            $table->boolean('status')
+              ->default(0)
+              ->comment('Current status of user 0: Suspended, 1: Active');
         });
     }
 

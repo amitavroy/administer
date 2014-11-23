@@ -47,6 +47,20 @@
             <p><span class="error-display">{{$errors->first('conf_pass')}}</span></p>
         </div>
 
+        <div class="form-group">
+            <label for="groups">My groups</label>
+            <ul class="list-group">
+              @foreach($data['groups'] as $group)
+                <li class="list-group-item"><input type="checkbox" name="groups[]" value="{{$group->name}}"/> {{$group->name}}</li>
+              @endforeach
+              <li class="list-group-item"><input type="checkbox" name="groups[]" value="auth" disabled/> Authenticated</li>
+            </ul>
+            @foreach($data['groups'] as $group)
+
+            @endforeach
+            <p><span class="error-display">{{$errors->first('groups')}}</span></p>
+        </div>
+
         <input type="submit" name="submit" value="Save" class="btn btn-primary"/>
     </div>
     {{Form::close()}}

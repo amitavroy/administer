@@ -25,7 +25,7 @@ class UserController extends GlobalController {
         $username = Input::get('username');
         $password = Input::get('password');
 
-        if (Auth::attempt(array('email' => $username, 'password' => $password)))
+        if (Auth::attempt(array('email' => $username, 'password' => $password, 'status' => 1)))
         {
             /**
              * session is handled through event
@@ -57,7 +57,7 @@ class UserController extends GlobalController {
         );
         $this->layout->pageTitle = 'Your profile';
         $this->layout->content = View::make('administer::users.view-profile')
-        ->with('data', $data);
+          ->with('data', $data);
     }
 
     /*
@@ -65,13 +65,19 @@ class UserController extends GlobalController {
      */
     public function getUserProfileEdit()
     {
+        $user = new AdminUser;
+
+        $data = array(
+          'groups' => $user->UserGroups(Auth::user()->id),
+        );
         $this->layout->pageTitle = 'Your profile';
-        $this->layout->content = View::make('administer::users.edit-profile');
+        $this->layout->content = View::make('administer::users.edit-profile')
+          ->with('data', $data);
     }
 
     public function handleUserProfileUpdate()
     {
-        $postData = Input::all();
+        $postData = Input::all();AdminHelper::dsm($postData,1);
 
         $user = new AdminUser;
 
