@@ -53,7 +53,7 @@ class UserController extends GlobalController {
         $user = new AdminUser;
 
         $data = array(
-            'groups' => $user->UserGroups(Auth::user()->id),
+          'groups' => $user->UserGroups(Auth::user()->id),
         );
         $this->layout->pageTitle = 'Your profile';
         $this->layout->content = View::make('administer::users.view-profile')
@@ -69,6 +69,7 @@ class UserController extends GlobalController {
 
         $data = array(
           'groups' => $user->UserGroups(Auth::user()->id),
+          'all_groups' => Groups::getAllGroups()
         );
         $this->layout->pageTitle = 'Your profile';
         $this->layout->content = View::make('administer::users.edit-profile')
@@ -77,7 +78,7 @@ class UserController extends GlobalController {
 
     public function handleUserProfileUpdate()
     {
-        $postData = Input::all();AdminHelper::dsm($postData,1);
+        $postData = Input::all();//AdminHelper::dsm($postData,1);
 
         $user = new AdminUser;
 

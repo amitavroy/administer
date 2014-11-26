@@ -17,8 +17,16 @@ class EventManager {
         date_default_timezone_set(Auth::user()->timezone);
     }
 
+    public function onUserUpdate()
+    {
+        $userId = Auth::user()->id;
+        Cache::forget('user_groups_'.$userId);
+        Cache::forget('user_groups_full'.$userId);
+    }
+
     public function subscribe($events)
     {
         $events->listen('auth.login', 'EventManager@onUserLogin');
+        $events->listen('auth.update', 'EventManager@onUserUpdate');
     }
 }

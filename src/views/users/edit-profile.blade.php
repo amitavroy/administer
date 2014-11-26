@@ -50,10 +50,18 @@
         <div class="form-group">
             <label for="groups">My groups</label>
             <ul class="list-group">
-              @foreach($data['groups'] as $group)
-                <li class="list-group-item"><input type="checkbox" name="groups[]" value="{{$group->name}}"/> {{$group->name}}</li>
-              @endforeach
-              <li class="list-group-item"><input type="checkbox" name="groups[]" value="auth" disabled/> Authenticated</li>
+            {{--{{AdminHelper::dsm($data)}}--}}
+            @foreach($data['all_groups'] as $key => $mGroup)
+                @if(AdminHelper::getUserGroupStatus($mGroup['name'], $data['groups']))
+                    @if ($mGroup['name'] == 'Authenticated user')
+                    <li class="list-group-item"><input type="checkbox" name="groups[]" value="{{$mGroup['id']}}" checked disabled/>{{$mGroup['name']}}</li>
+                    @else
+                    <li class="list-group-item"><input type="checkbox" name="groups[]" value="{{$mGroup['id']}}" checked/>{{$mGroup['name']}}</li>
+                    @endif
+                @else
+                    <li class="list-group-item"><input type="checkbox" name="groups[]" value="{{$mGroup['id']}}" />{{$mGroup['name']}}</li>
+                @endif
+            @endforeach
             </ul>
             @foreach($data['groups'] as $group)
 

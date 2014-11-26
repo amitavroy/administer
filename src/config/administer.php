@@ -8,6 +8,12 @@
 
 return array(
     /**
+     * This setting is to handle the caching on the application.
+     * All cache get is done through global function and hence if
+     * turned false, all queries will start to execute on every page.
+     */
+    'caching' => true,
+    /**
      * This is the main application title which will come by default
      * if the page title is not set.
      */

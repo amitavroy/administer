@@ -40,6 +40,30 @@ class AdminHelper {
     }
 
     /**
+     * This is the global function to call all cache objects.
+     * If the config of caching is disabled, it will always return false
+     * and hence no caching. (Should not be true for production until required.)
+     * @param $cacheKey
+     * @return bool
+     */
+    public static function getCache($cacheKey)
+    {
+        $caching = AdminHelper::getConfig('caching');
+
+        if (!$caching) {
+            return false;
+        }
+        else {
+            $cacheData = Cache::get($cacheKey);
+            if (!$cacheData) {
+                return false;
+            } else {
+                return $cacheData;
+            }
+        }
+    }
+
+    /**
      * This function will check the current route and apply the active or
      * normal class.
      *
@@ -113,5 +137,18 @@ class AdminHelper {
         Session::put('messages', $messageArr);
 
         return $output;
+    }
+
+    public static function getUserGroupStatus($groupName, $groupObject)
+    {
+        if ($groupName == 'Authenticated user') {
+            return true;
+        }
+
+        foreach ($groupObject as $g) {
+            if (strtolower($g->name) == strtolower($groupName)) {
+                return true;
+            }
+        }
     }
 }

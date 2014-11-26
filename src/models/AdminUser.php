@@ -20,7 +20,7 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
     {
         // check if cache present without full
         if ($full == false) {
-            $cacheData = Cache::get('user_groups_'.$userId);
+            $cacheData = AdminHelper::getCache('user_groups_'.$userId);
             if ($cacheData) {
                 return $cacheData;
             }
@@ -28,7 +28,7 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
 
         // check if cache present with full
         if ($full != false) {
-            $cacheData = Cache::get('user_groups_full'.$userId);
+            $cacheData = AdminHelper::getCache('user_groups_full'.$userId);
             if ($cacheData) {
                 return $cacheData;
             }
@@ -80,26 +80,38 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
      */
     public function profileUpdate($postData)
     {
-        $user = User::find(Auth::user()->id);
-        $user->email = $postData['email'];
-        $user->name = $postData['name'];
+        try {
+            DB::beginTransaction();
+            $user = User::find(Auth::user()->id);
+            $user->email = $postData['email'];
+            $user->name = $postData['name'];
 
-        // check current password is correct if isset
-        if ($postData['current_pass'] != '') {
+            // check current password is correct if isset
+            if ($postData['current_pass'] != '') {
 
-            $credentials = array(
-              'email' => Auth::user()->email,
-              'password' => $postData['current_pass']
-            );
+                $credentials = array(
+                  'email' => Auth::user()->email,
+                  'password' => $postData['current_pass']
+                );
 
-            if (!Auth::validate($credentials)) {
-                AdminHelper::setMessages('Current password is wrong', 'danger');
-                return Redirect::to('user/profile/edit');
+                if (!Auth::validate($credentials)) {
+                    AdminHelper::setMessages('Current password is wrong', 'danger');
+                    return Redirect::to('user/profile/edit');
+                }
+                $user->password = Hash::make($postData['new_pass']);
             }
-            $user->password = Hash::make($postData['new_pass']);
-        }
 
-        $user->save();
+            $user->save();
+
+            $this->saveUserGroupMapping(1, $postData['groups']);
+
+            DB::commit();
+
+            Event::fire('auth.update');
+        } catch (Exception $e) {
+            DB::rollback();
+            App::abort(500, 'DB Transaction failed. Data not saved');
+        }
     }
 
     /*
@@ -132,5 +144,28 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
         $validator = Validator::make($postData, $rules, $messages);
 
         return $validator;
+    }
+
+    /**
+     * This function is first removing all the user group assignment
+     * and then inserting the new ones.
+     * @param $uid
+     * @param $groupIds
+     */
+    private function saveUserGroupMapping($uid, $groupIds)
+    {
+        UserGroups::where('user_id', $uid)->delete();
+
+        foreach ($groupIds as $id) {
+            $userGroup = new UserGroups;
+            $userGroup->user_id = $uid;
+            $userGroup->group_id = $id;
+            $userGroup->save();
+        }
+
+        $userGroup = new UserGroups;
+        $userGroup->user_id = $uid;
+        $userGroup->group_id = 1;
+        $userGroup->save();
     }
 }
