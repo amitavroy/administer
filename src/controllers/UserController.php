@@ -35,6 +35,7 @@ class UserController extends GlobalController {
         }
         else
         {
+            AdminHelper::setMessages('Login failed!', 'warning');
             return Redirect::to('login');
         }
     }

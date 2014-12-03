@@ -8,6 +8,7 @@
     <title>{{ AdminHelper::getConfig('app-title') }}</title>
 @endif
     <link rel="stylesheet" href="{{asset('packages/amitavroy/administer/bootstrap-ubuntu.min.css')}}"/>
+    <link rel="stylesheet" href="{{asset('packages/amitavroy/administer/animate.css')}}"/>
 
     @section('scripts')
 <script type="text/javascript" src="{{asset('packages/amitavroy/administer/jquery-1.11.1.min.js')}}"></script>

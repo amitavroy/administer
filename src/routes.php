@@ -26,6 +26,16 @@ Route::group(array('prefix' => 'user', 'before' => 'auth'), function() {
     });
 });
 
+/**
+ * Groups related urls
+ */
+Route::group(array('prefix' => 'groups', 'before' => 'auth'), function() {
+    Route::get('manage', 'GroupsController@handleManageGroups');
+
+    Route::group(array('before' => 'csrf'), function() {
+    });
+});
+
 /*
  * Registering the validation
  */

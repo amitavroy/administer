@@ -19,4 +19,12 @@
         </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        if ($('.message .alert.alert-warning').length) {
+            $('.message').hide();
+            $('.jumbotron').addClass('animated shake');
+        }
+    });
+</script>
 @show
