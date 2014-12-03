@@ -28,4 +28,11 @@ class GlobalController extends BaseController {
 
         $this->layout = $layoutName;
     }
+
+    public function handleAccessDenied()
+    {
+        $this->layout->pageTitle = 'Access denied!';
+        AdminHelper::setMessages('Access denied!', 'warning');
+        $this->layout->content = View::make('administer::masters.access-denied');
+    }
 }

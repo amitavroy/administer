@@ -7,6 +7,7 @@
  */
 
 Route::get('login', 'UserController@getUserLoginPage');
+Route::get('access-denied', 'GlobalController@handleAccessDenied');
 
 Route::group(array('before' => 'csrf'), function() {
     Route::post('user/login', 'UserController@handleUserLogin');
@@ -15,7 +16,7 @@ Route::group(array('before' => 'csrf'), function() {
 /**
  * User related urls
  */
-Route::group(array('prefix' => 'user', 'before' => 'auth'), function() {
+Route::group(array('prefix' => 'users', 'before' => 'auth'), function() {
     Route::get('logout', 'UserController@handleUserLogout');
     Route::get('dashboard', 'UserController@getUserDashboard');
     Route::get('profile/view', 'UserController@getUserProfileView');
@@ -24,15 +25,27 @@ Route::group(array('prefix' => 'user', 'before' => 'auth'), function() {
     Route::group(array('before' => 'csrf'), function() {
         Route::post('profile/update', 'UserController@handleUserProfileUpdate');
     });
-});
 
-/**
- * Groups related urls
- */
-Route::group(array('prefix' => 'groups', 'before' => 'auth'), function() {
-    Route::get('manage', 'GroupsController@handleManageGroups');
+    /**
+     * Groups related urls
+     */
+    Route::group(array('prefix' => 'groups', 'before' => 'auth'), function() {
+        Route::get('manage', 'GroupsController@handleManageGroups');
 
-    Route::group(array('before' => 'csrf'), function() {
+        Route::group(array('before' => 'csrf'), function() {
+
+        });
+    });
+
+    /**
+     * Permissions realted urls
+     */
+    Route::group(array('prefix' => 'permissions', 'before' => 'auth'), function() {
+        Route::get('manage', 'PermissionController@handleManagePermissions');
+
+        Route::group(array('before' => 'csrf'), function() {
+
+        });
     });
 });
 

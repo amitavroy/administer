@@ -10,6 +10,13 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
 
     protected $table = 'permissions';
 
+    /**
+     * This function will check if the user has access to that particular function
+     *
+     * @param $permission_name
+     *
+     * @return bool
+     */
     public static function checkAccess($permission_name)
     {
         // get current user id
@@ -44,5 +51,12 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
 
         // if not, then return false
         return false;
+    }
+
+    public static function pageAccess($permission_name)
+    {
+        if (!Permissions::checkAccess($permission_name)) {
+            header('Location: ' . url('access-denied'));die;
+        }
     }
 }
