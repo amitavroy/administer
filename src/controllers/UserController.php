@@ -31,7 +31,7 @@ class UserController extends GlobalController {
              * session is handled through event
              * and then return user to the url
              */
-            return Redirect::intended('user/dashboard');
+            return Redirect::intended('users/dashboard');
         }
         else
         {
@@ -87,12 +87,12 @@ class UserController extends GlobalController {
 
         if ($validator->fails()) {
             AdminHelper::setMessages('Validation failed!', 'warning');
-            return Redirect::to('user/profile/edit')->withInput()->withErrors($validator);
+            return Redirect::to('users/profile/edit')->withInput()->withErrors($validator);
         } else {
             $user->profileUpdate($postData);
 
             AdminHelper::setMessages('Profile updated', 'success');
-            return Redirect::to('user/profile/view');
+            return Redirect::to('users/profile/view');
         }
     }
 
