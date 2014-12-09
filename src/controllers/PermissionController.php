@@ -10,19 +10,29 @@ class PermissionController extends GlobalController {
 
     public function handleManagePermissions()
     {
-        $permissions = Permissions::get();
-        $groups = Groups::get();
-        $groupPermissions = DB::table('group_permissions')->get();
+        $perm = new Permissions;
+        $data = $perm->formatPermissionMatrix();
 
         $this->layout->pageTitle = 'Manage permissions';
         $this->layout->content = View::make('administer::permissions.permission-manage')
-            ->with('groups', $groups)
-            ->with('groupPermissions', $groupPermissions)
-            ->with('permissions', $permissions);
+          ->with('data', $data);
     }
 
     public function handlePermissionSave()
     {
-        AdminHelper::dsm(Input::all(), 1);
+        $postData = Input::all();
+        $permissions = new Permissions;
+
+        if ($permissions->formatPermissionMatrix($postData)) {
+            AdminHelper::setMessages('Saved');
+        }
+
+        return Redirect::back();
+    }
+
+    public function handleAddPermission()
+    {
+        $this->layout->pageTitle = 'Add new permission';
+        $this->layout->content = View::make('administer::permissions.permission-add');
     }
 }

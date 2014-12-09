@@ -42,6 +42,7 @@ Route::group(array('prefix' => 'users', 'before' => 'auth'), function() {
      */
     Route::group(array('prefix' => 'permissions', 'before' => 'auth'), function() {
         Route::get('manage', 'PermissionController@handleManagePermissions');
+        Route::get('add', 'PermissionController@handleAddPermission');
 
         Route::group(array('before' => 'csrf'), function() {
             Route::post('save', 'PermissionController@handlePermissionSave');
