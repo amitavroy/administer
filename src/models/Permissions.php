@@ -157,6 +157,12 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
         }
     }
 
+    /**
+     * This is the public function which is doing all the actions
+     * to save a new perimssion.
+     * @param $permissionName [the human readable name of the permission]
+     * @param $group          [the group name for the permission group]
+     */
     public function addNewPermission($permissionName = null, $group = 'Users')
     {
         // checking if the permission name is null or blank
@@ -190,6 +196,10 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
         return true;
     }
 
+    /**
+     * Take the human readable perm name and return sanitized name
+     * @param  $name [description]
+     */
     private function sanitizePermissionName($name)
     {
         // strings to be replaced
@@ -201,6 +211,10 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
         return $sanitizedName;
     }
 
+    /**
+     * Take the permission machine name, if exist return true else false
+     * @param  $name [permission machine name]
+     */
     private function permissionExist($name)
     {
         $result = DB::table('permissions')->where('permission_machine_name', $name)->count();
@@ -212,6 +226,10 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
         }
     }
 
+    /**
+     * Assign default values to Super Admin and other groups
+     * @param  $permissionId
+     */
     private function assignNewPermissionValues($permissionId)
     {
         // get all group ids
