@@ -23,7 +23,7 @@ class PermissionController extends GlobalController {
         $postData = Input::all();
         $permissions = new Permissions;
 
-        if ($permissions->formatPermissionMatrix($postData)) {
+        if ($permissions->handlePermissionMatrixUpdate($postData)) {
             AdminHelper::setMessages('Saved');
         }
 
@@ -32,7 +32,19 @@ class PermissionController extends GlobalController {
 
     public function handleAddPermission()
     {
+        $permissionData = Permissions::all();
+        
         $this->layout->pageTitle = 'Add new permission';
-        $this->layout->content = View::make('administer::permissions.permission-add');
+        $this->layout->content = View::make('administer::permissions.permission-add')
+            ->with('permissions', $permissionData);
+    }
+
+    public function handlePermissionAdd()
+    {
+        $permission = new Permissions;
+
+        $permission->addNewPermission(Input::get('permision'));
+
+        return Redirect::back();
     }
 }

@@ -118,6 +118,7 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
     {
         foreach ($postData as $key => $value) {
             $arrayCheck = explode('|', $key);
+
             // get only the hidden values
             if (count($arrayCheck) == 3) {
                 $allow = $this->getPermissionValue($arrayCheck, $postData);
@@ -154,5 +155,84 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
         else {
             return 0;
         }
+    }
+
+    public function addNewPermission($permissionName = null, $group = 'Users')
+    {
+        // checking if the permission name is null or blank
+        if ($permissionName == null || $permissionName == '') {
+            AdminHelper::setMessages('Permission name cannot be blank.', 'warning');
+            return false;
+        }
+
+        // sanitize the permission name
+        $originalName = $permissionName;
+        $permissionName = $this->sanitizePermissionName($permissionName);
+
+        // check if the permission already exist
+        if ($this->permissionExist($permissionName)) {
+            AdminHelper::setMessages('Permission with this name already exist.', 'warning');
+            return false;
+        }
+
+        // saving the permission to permission table
+        $permissionId = DB::table('permissions')->insertGetId(array(
+            'permission_name' => $originalName,
+            'permission_machine_name' => $permissionName,
+            'permission_group' => $group,
+        ));
+
+        // assigning the permission to Super admin and disallow for all others
+        $this->assignNewPermissionValues($permissionId);
+
+        AdminHelper::setMessages('New permission added.');
+
+        return true;
+    }
+
+    private function sanitizePermissionName($name)
+    {
+        // strings to be replaced
+        $charsToUnderScore = array(' ', '-', '?', '&', '@', '!', '$', '%', '^', '(', ')', '[', ']', '{', '}', '=');
+
+        // final sanitized name
+        $sanitizedName = str_replace($charsToUnderScore, "_", $name);
+
+        return $sanitizedName;
+    }
+
+    private function permissionExist($name)
+    {
+        $result = DB::table('permissions')->where('permission_machine_name', $name)->count();
+
+        if ($result && $result === 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function assignNewPermissionValues($permissionId)
+    {
+        // get all group ids
+        $groupIds = DB::table('groups')->select('id')->get();
+
+        $data = array();
+        foreach ($groupIds as $key => $id) {
+            $allow = 0;
+            if ($id->id == 2) {
+                $allow = 1;
+            }
+
+            $data[$key] = array(
+                'permission_id' => $permissionId,
+                'group_id' => $id->id,
+                'allow' => $allow,
+            );
+        }
+
+        DB::table('group_permissions')->insert($data);
+
+        return true;
     }
 }

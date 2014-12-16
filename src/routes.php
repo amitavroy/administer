@@ -46,6 +46,7 @@ Route::group(array('prefix' => 'users', 'before' => 'auth'), function() {
 
         Route::group(array('before' => 'csrf'), function() {
             Route::post('save', 'PermissionController@handlePermissionSave');
+            Route::post('add-new', 'PermissionController@handlePermissionAdd');
         });
     });
 });
