@@ -11,7 +11,7 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
     protected $table = 'permissions';
 
     /**
-     * This function will check if the user has access to that particular function
+     * This function will check if the user has access to that particular permission
      *
      * @param $permission_name
      *
@@ -130,7 +130,7 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
                   ->where('group_id', $groupId)
                   ->update(array(
                     'allow' => $allow
-                  ));
+                ));
             }
         }
 
@@ -207,6 +207,9 @@ class Permissions extends Illuminate\Database\Eloquent\Model {
 
         // final sanitized name
         $sanitizedName = str_replace($charsToUnderScore, "_", $name);
+
+        // lower case everything
+        $sanitizedName = strtolower($sanitizedName);
 
         return $sanitizedName;
     }

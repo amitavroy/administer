@@ -19,6 +19,12 @@ Route::group(array('before' => 'csrf'), function() {
 Route::group(array('prefix' => 'users', 'before' => 'auth'), function() {
     Route::get('logout', 'UserController@handleUserLogout');
     Route::get('dashboard', 'UserController@getUserDashboard');
+    
+    Route::get('view', 'UserController@getUserListing');
+    Route::get('add', 'UserController@getUserAddPage');
+    Route::get('delete/{id}', 'UserController@handleDeleteUser');
+    Route::post('add/save', 'UserController@handleUserSave');
+
     Route::get('profile/view', 'UserController@getUserProfileView');
     Route::get('profile/edit', 'UserController@getUserProfileEdit');
 

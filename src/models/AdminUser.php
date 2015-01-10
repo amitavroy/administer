@@ -10,6 +10,16 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
 
     protected $table = 'users';
 
+    protected $fillable = array('name', 'email', 'data', 'status');
+    protected $guarded = array('id', 'password');
+    
+    protected $valMess = array(
+        'name.required' => 'We need to know your name.',
+        'email.required' => 'Email address is mandatory.',
+        'conf_pass.required' => 'Need to type the password twice.',
+        'conf_pass.matchpass' => 'The two passwords do not match',
+    );
+
     /**
      * This function will return the user groups.
      * @param $userId
@@ -118,30 +128,30 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
      * This function is validating the form of edit profile
      * and returning the validator object.
      */
-    public function profileUpdateValidation($postData)
+    public function profileUpdateValidation($data)
     {
         /*
          * Setting rules for the form
          */
         $rules = array(
-          'name' => 'required|min:3',
-          'email' => 'required|email',
+            'name' => 'required|min:3',
+            'email' => 'required|email',
         );
 
-        if ($postData['current_pass'] != '') {
+        if ($data['current_pass'] != '') {
             $rules['new_pass'] = 'required';
-            $rules['conf_pass'] = 'required|Matchpass:' . $postData['new_pass'];
+            $rules['conf_pass'] = 'required|Matchpass:' . $data['new_pass'];
         }
 
         $messages = array(
-          'name.required' => 'We need to know your name.',
-          'email.required' => 'Email address is mandatory.',
-          'new_pass.required' => 'Provide a password to change.',
-          'conf_pass.required' => 'Need to type the password twice.',
-          'conf_pass.matchpass' => 'The two passwords do not match',
+            'name.required' => $this->valMess['name.required'],
+            'email.required' => $this->valMess['email.required'],
+            'new_pass.required' => 'Provide a password to change.',
+            'conf_pass.required' => $this->valMess['conf_pass.required'],
+            'conf_pass.matchpass' => $this->valMess['conf_pass.matchpass'],
         );
 
-        $validator = Validator::make($postData, $rules, $messages);
+        $validator = Validator::make($data, $rules, $messages);
 
         return $validator;
     }
@@ -167,5 +177,61 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
         $userGroup->user_id = $uid;
         $userGroup->group_id = 1;
         $userGroup->save();
+    }
+
+    /**
+     * Validating the data before creating user.
+     * @param  $data
+     * @return true / false
+     */
+    public function createUserValidation($data)
+    {
+        /*
+         * Setting rules for the form
+         */
+        $rules = array(
+            'name' => 'required|min:3',
+            'email' => 'required|email',
+            'email' => 'unique:users,email',
+            'new_pass' => 'required',
+            'conf_pass' => 'required|Matchpass:' . $data['new_pass'],
+        );
+
+        $messages = array(
+            'name.required' => $this->valMess['name.required'],
+            'email.required' => $this->valMess['email.required'],
+            'new_pass.required' => 'You need a password to create account.',
+            'conf_pass.required' => $this->valMess['conf_pass.required'],
+            'conf_pass.matchpass' => $this->valMess['conf_pass.matchpass'],
+        );
+
+        $validator = Validator::make($data, $rules, $messages);
+
+        return $validator;
+    }
+
+    public function createNewUser($data)
+    {
+        Eloquent::unguard();
+        
+        User::create(array(
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'status' => 1,
+        ));
+    }
+
+    public function deleteUser($id)
+    {
+        if ($id == 1) {
+            AdminHelper::setMessages('This user cannot be deleted.', 'warning');
+            return false;
+        }
+        else {
+            DB::table($this->table)->where('id', $id)->delete();
+            AdminHelper::setMessages('The user was deleted.', 'success');
+            return true;
+        }
     }
 }

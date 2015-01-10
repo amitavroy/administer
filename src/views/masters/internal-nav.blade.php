@@ -11,6 +11,10 @@
                   <li class="{{AdminHelper::activeLinkHandle('users/profile/edit')}}"><a href="{{url('users/profile/edit')}}">Edit profile</a></li>
                 </ul>
             </li>
+            <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-expanded="false">
+                  Actions <span class="caret"></span></a>
+            </li>
           <li role="presentation" class="{{AdminHelper::activeLinkHandle('users/logout')}}"><a href="{{url('users/logout')}}">Logout</a></li>
         </ul>
     </div>

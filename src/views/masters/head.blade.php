@@ -13,6 +13,7 @@
     @section('scripts')
 <script type="text/javascript" src="{{asset('packages/amitavroy/administer/jquery-1.11.1.min.js')}}"></script>
     <script type="text/javascript" src="{{asset('packages/amitavroy/administer/bootstrap.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('packages/amitavroy/administer/administer-scripts.min.js')}}"></script>
     @show
 
 </head>

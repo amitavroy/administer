@@ -10,6 +10,8 @@ class PermissionController extends GlobalController {
 
     public function handleManagePermissions()
     {
+        Permissions::pageAccess('manage_permissions');
+
         $perm = new Permissions;
         $data = $perm->formatPermissionMatrix();
 

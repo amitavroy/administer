@@ -96,6 +96,66 @@ class UserController extends GlobalController {
         }
     }
 
+    public function getUserAddPage()
+    {
+        $user = new AdminUser;
+
+        $data = array(
+          'groups' => $user->UserGroups(Auth::user()->id),
+          'all_groups' => Groups::getAllGroups()
+        );
+
+        $this->layout->pageTitle = 'Add new user';
+        $this->layout->content = View::make('administer::users.add-user')
+            ->with('data', $data);
+    }
+
+    public function handleUserSave()
+    {
+        $postData = Input::all();
+
+        $user = new AdminUser;
+
+        $validator = $user->createUserValidation($postData);
+
+        if ($validator->fails()) {
+            AdminHelper::setMessages('Validation failed!', 'warning');
+            return Redirect::to('users/add')->withInput()->withErrors($validator);
+        } else {
+            $user->createNewUser(array(
+                'name' => $postData['name'],
+                'email' => $postData['email'],
+                'password' => $postData['conf_pass'],
+            ));
+
+            AdminHelper::setMessages('New user created', 'success');
+            return Redirect::to('users/view');
+        }
+    }
+
+    public function getUserListing()
+    {
+        Permissions::pageAccess('manage_all_users');
+        
+        $user = new AdminUser;
+        $users = DB::table('users')->paginate(20);
+
+        $this->layout->pageTitle = 'View all users';
+        $this->layout->content = View::make('administer::users.view-users')
+            ->with('users', $users);
+    }
+
+    public function handleDeleteUser($id)
+    {
+        Permissions::pageAccess('delete_users');
+
+        $user = new AdminUser;
+
+        $user->deleteUser($id);
+
+        return Redirect::to('users/view');
+    }
+
     /**
      * This is handling the user dashboard view.
      */
