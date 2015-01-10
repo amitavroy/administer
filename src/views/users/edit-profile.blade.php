@@ -5,7 +5,7 @@
 @include('administer::masters.internal-nav')
 <div class="row">
     <div class="col-md-5">
-    {{Form::open(array('url' => 'user/profile/update'))}}
+    {{Form::open(array('url' => 'users/profile/update'))}}
     <div class="form-group">
         <div class="input-group">
             <div class="input-group-addon">Name:</div>
