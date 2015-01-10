@@ -212,14 +212,36 @@ class AdminUser extends Illuminate\Database\Eloquent\Model {
 
     public function createNewUser($data)
     {
-        Eloquent::unguard();
-        
-        User::create(array(
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'status' => 1,
-        ));
+        try {
+            DB::beginTransaction();
+
+            $user = new AdminUser;
+            $user->name = $data['name'];
+            $user->email = $data['email'];
+            $user->password = Hash::make($data['password']);
+            $user->status = 1;
+            $user->save();
+            
+            $userId = $user->id;
+            
+            foreach ($data['groups'] as $key => $groupId) {
+                $groups[$key] = $groupId;
+            }
+
+            $groups[count($groups)] = 1;
+
+            $userGroups = array();
+            foreach ($groups as $key => $groupId) {
+                $userGroups[$key] = array('group_id' => $groupId, 'user_id' => $userId);
+            }
+
+            DB::table('user_groups')->insert($userGroups);
+
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollback();
+            App::abort(500, 'DB Transaction failed. Data not saved');
+        }
     }
 
     public function deleteUser($id)

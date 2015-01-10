@@ -126,6 +126,7 @@ class UserController extends GlobalController {
                 'name' => $postData['name'],
                 'email' => $postData['email'],
                 'password' => $postData['conf_pass'],
+                'groups' => $postData['groups'],
             ));
 
             AdminHelper::setMessages('New user created', 'success');
